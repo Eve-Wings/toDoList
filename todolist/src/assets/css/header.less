@@ -1,0 +1,44 @@
+.headerNav {
+  width: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  min-height: 50px;
+  border-bottom: 2px solid #bbb;
+  color: inherit;
+  background: inherit;
+  transition: all 1s;
+
+  .navContainer {
+    width: 85%;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+
+    .logo {
+      height: 60px;
+      display: flex;
+
+      img {
+        transition: all 1s;
+        max-height: 60px;
+        filter: invert();
+      }
+    }
+
+    .navRight {
+      display: flex;
+      margin-left: auto;
+      margin-right: 5px;
+
+      a {
+        color: #aaa;
+
+        &:hover {
+          color: #363636
+        }
+      }
+    }
+  }
+}
