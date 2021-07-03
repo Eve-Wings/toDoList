@@ -16,11 +16,11 @@ export class Matter {
 		this.completionTime = completionTime
 		this.priority = priority
 		this.completion = false
-		this.matter_sons = []
+		this.matterSons = []
 	}
 }
 // 代办子事项
-export class Matter_son {
+export class matterSon {
 	constructor(classIndex, matterIndex, label, describe, createTime, completionTime, priority) {
 		this.classIndex = classIndex
 		this.matterIndex = matterIndex

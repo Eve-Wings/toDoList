@@ -84,48 +84,49 @@ export default createStore({
 		// 代办子事项相关——增删改
 		// 增加新的代办子事项
 		pushMatterSon(state, pushMatterSonForm) {
-			// classIndex, matterIndex, matter_son
+			// classIndex, matterIndex, matterSon
 			let classIndex = pushMatterSonForm.classIndex
 			let matterIndex = pushMatterSonForm.matterIndex
-			let matter_son = pushMatterSonForm
-			state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons.push(matter_son)
+			let matterSon = pushMatterSonForm
+			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons.push(matterSon)
 		},
 		// 删除代办子事项
 		removeMatterSon(state, removeMatterSonForm) {
-			// classIndex, matterIndex, matter_sonIndex
+			// classIndex, matterIndex, matterSonIndex
 			let classIndex = removeMatterSonForm.classIndex
 			let matterIndex = removeMatterSonForm.matterIndex
 			let matterSonIndex = removeMatterSonForm.matterSonIndex
 			let matterSonsLength = state.mattersList.classifications[classIndex].matters[matterIndex]
-				.matter_sons.length
+				.matterSons.length
 			for (let i = matterSonIndex; i < matterSonsLength - 1; i++) {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[i] = state
-					.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[i + 1]
+				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[i] = state
+					.mattersList.classifications[classIndex].matters[matterIndex].matterSons[i + 1]
 			}
-			state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons.pop()
+			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons.pop()
 		},
 		// 修改代办子事项
 		editMatterSon(state, editMatterSonForm) {
-			// classIndex, matterIndex, matter_sonIndex, matter_son
+			// classIndex, matterIndex, matterSonIndex, matterSon
 			let classIndex = editMatterSonForm.classIndex
 			let matterIndex = editMatterSonForm.matterIndex
 			let matterSonIndex = editMatterSonForm.matterSonIndex
 			console.log(editMatterSonForm)
-			console.log(state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex])
-			state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].label = editMatterSonForm.label
-			state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].describe = editMatterSonForm.describe
-			state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].completionTime = editMatterSonForm.completionTime
-			state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].priority = editMatterSonForm.priority
+			console.log(state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex])
+			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].label = editMatterSonForm.label
+			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].describe = editMatterSonForm.describe
+			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completionTime = editMatterSonForm.completionTime
+			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].priority = editMatterSonForm.priority
 		},
+		// 子事项完成情况修改
 		complateMatterSon(state,form) {
 			let classIndex = form.classIndex
 			let matterIndex = form.matterIndex
 			let matterSonIndex = form.matterSonIndex
-			let comp = state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].completion
+			let comp = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion
 			if(comp === true) {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].completion = false
+				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion = false
 			} else {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matter_sons[matterSonIndex].completion = true
+				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion = true
 			}
 		}
 	},

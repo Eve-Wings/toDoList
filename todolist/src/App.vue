@@ -38,33 +38,33 @@
 											<span v-if="matter.describe !== '' ">描述: {{matter.describe}}</span>
 											<n-collapse>
 												<n-collapse-item title="查看子事项" :name="matterIndex"
-													v-if="matter.matter_sons.length !== 0">
+													v-if="matter.matterSons.length !== 0">
 													<!-- 代办子事项相关 -->
-													<n-card v-for="(matter_son,matter_sonIndex) in matter.matter_sons"
-														:key="matter_sonIndex" class="matter_son"
-														:class="{compMatter:matter_son.completion}"
-														:title="matter_son.label">
+													<n-card v-for="(matterSon,matterSonIndex) in matter.matterSons"
+														:key="matterSonIndex" class="matterSon"
+														:class="{compMatter:matterSon.completion}"
+														:title="matterSon.label">
 														<!-- 代办子事项操作相关 -->
 														<template #header-extra>
 															<div style="margin-right: 20px;">
-																<n-switch :default-value="matter_son.completion"
-																	@update:value="matter_sonComplet(classIndex, matterIndex, matter_sonIndex)"
+																<n-switch :default-value="matterSon.completion"
+																	@update:value="matterSonComplet(classIndex, matterIndex, matterSonIndex)"
 																	size="small" />
 															</div>
 															<div style="margin-right: 20px;">
-																<n-rate size="small" :value="matter_son.priority" />
+																<n-rate size="small" :value="matterSon.priority" />
 															</div>
 															<div>
 																<n-button type="warning" style="margin-right: 20px"
-																	@click="showEditMatterSon(matter_sonIndex,matter_son)">
+																	@click="showEditMatterSon(matterSonIndex,matterSon)">
 																	编辑</n-button>
 																<n-button type="error"
-																	@click="removeMatterSon(classIndex, matterIndex, matter_sonIndex)">
+																	@click="removeMatterSon(classIndex, matterIndex, matterSonIndex)">
 																	删除</n-button>
 															</div>
 														</template>
-														<span v-if="matter_son.describe !=='' ">描述:
-															{{matter_son.describe}}</span>
+														<span v-if="matterSon.describe !=='' ">描述:
+															{{matterSon.describe}}</span>
 													</n-card>
 												</n-collapse-item>
 											</n-collapse>
@@ -316,7 +316,7 @@
 	import {
 		Classification,
 		Matter,
-		Matter_son
+		matterSon
 	} from './assets/js/classDefined.js'
 	import {
 		defineComponent
@@ -445,7 +445,8 @@
 				this.$store.commit('pushClassification', classification)
 				this.createClassForm.label = ''
 				this.showClassForm()
-				this.saveLocal()
+				this.isShadow = !this.isShadow
+				this.isCreateClass = !this.isCreateClass
 			},
 			// 移除分类
 			removeClass(index) {
@@ -546,9 +547,9 @@
 			pushMatterSon() {
 				let createTime = new Date().setHours(0, 0, 0, 0)
 				let cMSF = this.createMatterSonForm
-				let matter_son = new Matter_son(cMSF.classIndex, cMSF.matterIndex, cMSF.label, cMSF.describe,
+				let matterSon = new matterSon(cMSF.classIndex, cMSF.matterIndex, cMSF.label, cMSF.describe,
 					createTime, cMSF.completionTime, cMSF.priority)
-				this.$store.commit('pushMatterSon', matter_son)
+				this.$store.commit('pushMatterSon', matterSon)
 				this.isShadow = !this.isShadow
 				this.isCreateMatterSon = !this.isCreateMatterSon
 				this.createMatterSonForm = {
@@ -562,7 +563,7 @@
 				this.saveLocal()
 			},
 			// 修改子事项完成情况
-			matter_sonComplet(classIndex, matterIndex, matterSonIndex) {
+			matterSonComplet(classIndex, matterIndex, matterSonIndex) {
 				let form = {
 					classIndex: classIndex,
 					matterIndex: matterIndex,
