@@ -89,21 +89,15 @@ toDoList——一个能够记录更多细节和更清晰更详细内容的待办
 
 ### 3.1：操作流程
 
-<img :src="$withBase('/assets/img/toDoList/操作流程图.jpg') " alt="操作流程图">
-
 
 
 ### 3.2：用例图
-
-<img :src="$withBase('/assets/img/toDoList/用例图.jpg')" alt="用例图">
 
 
 
 ## 4.数据库设计
 
 ### 4.1 E-R图
-
-<img :src="$withBase('/assets/img/toDoList/E-R图.jpg')" alt="E-R图">
 
 
 
@@ -198,8 +192,6 @@ matter_son = {
 ## 5.页面设计
 
 简单线框图(因为工具的问题，暂不进行细化)
-
-<img :src="$withBase('/assets/img/toDoList/简单线框图.jpg')" alt="用例图">
 
 
 
