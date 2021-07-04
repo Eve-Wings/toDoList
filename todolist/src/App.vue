@@ -5,16 +5,55 @@
 			<headerNav></headerNav>
 			<div id="main">
 				<!-- 展示待办事项列表 -->
-				<transition name="Slide-left"  mode="out-in">
+				<transition name="Slide-left" mode="out-in">
 					<div v-if="$store.state.mattersList.classifications.length !== 0">
 						<n-card>
 							<n-card v-for="(classification, classIndex) in $store.state.mattersList.classifications"
-								:key="classIndex" class="classification">
+								:key="classIndex" class="classification" :title="classification.label">
+								<template #header-extra>
+									<!-- 用于修改分类的内容 -->
+									<div class="classEditBtns">
+										<n-button type="info" style="margin-right: 20px;"
+											@click="showCreateMatterForm(classIndex)" circle>
+											<template #icon>
+												<svg xmlns="http://www.w3.org/2000/svg"
+													xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 448 512">
+													<path
+														d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+														fill="currentColor"></path>
+												</svg>
+											</template>
+										</n-button>
+										<n-button type="warning" style="margin-right: 20px;"
+											@click="showEditClassForm(classIndex)" circle>
+											<template #icon>
+												<svg xmlns="http://www.w3.org/2000/svg"
+													xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 576 512">
+													<path
+														d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+														fill="currentColor"></path>
+												</svg>
+											</template>
+										</n-button>
+										<n-button type="error" @click="removeClass(classIndex)" circle>
+											<template #icon>
+												<svg xmlns="http://www.w3.org/2000/svg"
+													xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 448 512">
+													<path
+														d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+														fill="currentColor"></path>
+												</svg>
+											</template>
+										</n-button>
+									</div>
+								</template>
 								<n-collapse>
-									<n-collapse-item :title="classification.label" :name="classIndex">
+									<n-collapse-item title="查看事项" v-if="classification.matters.length !== 0"
+										:name="classIndex">
 										<!-- 代办事项相关 -->
-										<n-card v-for="(matter, matterIndex) in classification.matters" :key="matterIndex"
-											class="matter" :class="{compMatter:matter.completion}" :title="matter.label">
+										<n-card v-for="(matter, matterIndex) in classification.matters"
+											:key="matterIndex" class="matter" :class="{compMatter:matter.completion}"
+											:title="matter.label">
 											<!-- 待办事项操作相关 -->
 											<template #header-extra>
 												<div style="margin-right: 20px">
@@ -27,11 +66,41 @@
 												</div>
 												<div>
 													<n-button type="info" style="margin-right: 20px;"
-														@click="showCreateMatterSonForm(classIndex, matterIndex)">+ 添加子事项
+														@click="showCreateMatterSonForm(classIndex, matterIndex)"
+														circle>
+														<template #icon>
+															<svg xmlns="http://www.w3.org/2000/svg"
+																xmlns:xlink="http://www.w3.org/1999/xlink"
+																viewBox="0 0 448 512">
+																<path
+																	d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+																	fill="currentColor"></path>
+															</svg>
+														</template>
 													</n-button>
 													<n-button type="warning" style="margin-right: 20px;"
-														@click="showEditMatter(matterIndex,matter)">编辑</n-button>
-													<n-button type="error" @click="removeMatter(classIndex, matterIndex)">删除
+														@click="showEditMatter(matterIndex,matter)" circle>
+														<template #icon>
+															<svg xmlns="http://www.w3.org/2000/svg"
+																xmlns:xlink="http://www.w3.org/1999/xlink"
+																viewBox="0 0 576 512">
+																<path
+																	d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+																	fill="currentColor"></path>
+															</svg>
+														</template>
+													</n-button>
+													<n-button type="error"
+														@click="removeMatter(classIndex, matterIndex)" circle>
+														<template #icon>
+															<svg xmlns="http://www.w3.org/2000/svg"
+																xmlns:xlink="http://www.w3.org/1999/xlink"
+																viewBox="0 0 448 512">
+																<path
+																	d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+																	fill="currentColor"></path>
+															</svg>
+														</template>
 													</n-button>
 												</div>
 											</template>
@@ -56,11 +125,31 @@
 															</div>
 															<div>
 																<n-button type="warning" style="margin-right: 20px"
-																	@click="showEditMatterSon(matterSonIndex,matterSon)">
-																	编辑</n-button>
+																	@click="showEditMatterSon(matterSonIndex,matterSon)"
+																	circle>
+																	<template #icon>
+																		<svg xmlns="http://www.w3.org/2000/svg"
+																			xmlns:xlink="http://www.w3.org/1999/xlink"
+																			viewBox="0 0 576 512">
+																			<path
+																				d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"
+																				fill="currentColor"></path>
+																		</svg>
+																	</template>
+																</n-button>
 																<n-button type="error"
-																	@click="removeMatterSon(classIndex, matterIndex, matterSonIndex)">
-																	删除</n-button>
+																	@click="removeMatterSon(classIndex, matterIndex, matterSonIndex)"
+																	circle>
+																	<template #icon>
+																		<svg xmlns="http://www.w3.org/2000/svg"
+																			xmlns:xlink="http://www.w3.org/1999/xlink"
+																			viewBox="0 0 448 512">
+																			<path
+																				d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+																				fill="currentColor"></path>
+																		</svg>
+																	</template>
+																</n-button>
 															</div>
 														</template>
 														<span v-if="matterSon.describe !=='' ">描述:
@@ -71,14 +160,6 @@
 										</n-card>
 										<!-- 代办事项结束 -->
 									</n-collapse-item>
-									<!-- 用于修改分类的内容 -->
-									<div class="classEditBtns">
-										<n-button type="info" style="margin-right: 20px;"
-											@click="showCreateMatterForm(classIndex)">+ 添加事项</n-button>
-										<n-button type="warning" style="margin-right: 20px;"
-											@click="showEditClassForm(classIndex)">编辑</n-button>
-										<n-button type="error" @click="removeClass(classIndex)">删除</n-button>
-									</div>
 								</n-collapse>
 							</n-card>
 							<n-card title="创建新的分类" style="margin-top: 30px;">
@@ -88,7 +169,7 @@
 							</n-card>
 						</n-card>
 					</div>
-				<!-- 当事项列表中没有任何分类时 -->
+					<!-- 当事项列表中没有任何分类时 -->
 					<div v-else>
 						<n-card title="你尚未添加任何的分类，请您添加分类">
 							<template #header-extra>
@@ -99,7 +180,7 @@
 				</transition>
 			</div>
 			<template>
-				<n-back-top :right="50" show />
+				<n-back-top :right="30" show />
 			</template>
 		</n-space>
 		<!-- 遮罩层 -->
@@ -117,13 +198,16 @@
 					</template>
 					<n-form :model="createClassForm">
 						<n-form-item label="分类名">
-							<n-input v-model:value="createClassForm.label"></n-input>
+							<n-input v-model:value="createClassForm.label" maxlength="20" show-count clearable @keyup.enter="createClassKeyup()">
+							</n-input>
 						</n-form-item>
-						<span>可以是时间、也可以是性质……比如说，工作？学习？项目？七月第一周？</span>
-						<br>
-						<span>或者说……本周的减肥计划？</span>
-						<br>
-						<span>当然如果您愿意的话，取名为“超级无敌的我会做的事”也不是不可以……</span>
+						<div class="createClassDescribe">
+							<span>可以是时间、也可以是性质……比如说，工作？学习？项目？七月第一周？</span>
+							<br>
+							<span>或者说……本周的减肥计划？</span>
+							<br>
+							<span>当然如果您愿意的话，取名为“超级无敌的我会做的事”也不是不可以……</span>
+						</div>
 						<n-form-item>
 							<!-- 提交按钮 -->
 							<n-button style="margin-left: auto;" @click="pushClass()"
@@ -142,7 +226,7 @@
 					</template>
 					<n-form :model="editClassForm">
 						<n-form-item label="分类名">
-							<n-input v-model:value="editClassForm.label"></n-input>
+							<n-input v-model:value="editClassForm.label" maxlength="20" show-count clearable @keyup.enter="editClassKeyup()"></n-input>
 						</n-form-item>
 						<n-form-item>
 							<n-button style="margin-left: auto;" @click="editClass()"
@@ -162,7 +246,7 @@
 					<n-form :model="createMatterForm">
 						<n-form-item label="事项名" show-require-mark>
 							<n-input v-model:value="createMatterForm.label" placeholder="请输入事项名——比如,我想吃白切鸡？"
-								maxlength="20" show-count clearable></n-input>
+								maxlength="20" show-count clearable @keyup.enter="createMatterKeyup()"></n-input>
 						</n-form-item>
 						<n-grid x-gap="12" :cols="2">
 							<n-grid-item>
@@ -200,7 +284,7 @@
 					<n-form :model="editMatterForm">
 						<n-form-item label="事项名" show-require-mark>
 							<n-input v-model:value="editMatterForm.label" placeholder="请输入事项名" maxlength="20" show-count
-								clearable></n-input>
+								clearable  @keyup.enter="editMatterKeyup()"></n-input>
 						</n-form-item>
 						<n-grid x-gap="12" :cols="2">
 							<n-grid-item>
@@ -237,7 +321,7 @@
 					<n-form :model="createMatterSonForm">
 						<n-form-item label="子事项名" show-require-mark>
 							<n-input v-model:value="createMatterSonForm.label" placeholder="第一步……准备材料" maxlength="20"
-								show-count clearable></n-input>
+								show-count clearable @keyup.enter="createMatterSonKeyup()"></n-input>
 						</n-form-item>
 						<n-grid x-gap="12" :cols="2">
 							<n-grid-item>
@@ -275,7 +359,7 @@
 					<n-form :model="editMatterSonForm">
 						<n-form-item label="事项名" show-require-mark>
 							<n-input v-model:value="editMatterSonForm.label" placeholder="请输入事项名" maxlength="20"
-								show-count clearable></n-input>
+								show-count clearable @keyup.enter="editMatterKeyup()"></n-input>
 						</n-form-item>
 						<n-grid x-gap="12" :cols="2">
 							<n-grid-item>
@@ -316,7 +400,7 @@
 	import {
 		Classification,
 		Matter,
-		matterSon
+		MatterSon
 	} from './assets/js/classDefined.js'
 	import {
 		defineComponent
@@ -444,9 +528,9 @@
 				let classification = new Classification(label)
 				this.$store.commit('pushClassification', classification)
 				this.createClassForm.label = ''
-				this.showClassForm()
 				this.isShadow = !this.isShadow
 				this.isCreateClass = !this.isCreateClass
+				this.saveLocal()
 			},
 			// 移除分类
 			removeClass(index) {
@@ -547,7 +631,7 @@
 			pushMatterSon() {
 				let createTime = new Date().setHours(0, 0, 0, 0)
 				let cMSF = this.createMatterSonForm
-				let matterSon = new matterSon(cMSF.classIndex, cMSF.matterIndex, cMSF.label, cMSF.describe,
+				let matterSon = new MatterSon(cMSF.classIndex, cMSF.matterIndex, cMSF.label, cMSF.describe,
 					createTime, cMSF.completionTime, cMSF.priority)
 				this.$store.commit('pushMatterSon', matterSon)
 				this.isShadow = !this.isShadow
@@ -616,6 +700,43 @@
 				let str = JSON.stringify(this.$store.state.mattersList)
 				// 本地缓存
 				localStorage.setItem('mattersList', str)
+			},
+			// 按下回车
+			// 创建分类中，按下回车
+			createClassKeyup() {
+				if(this.createClassForm.label !== '') {
+					this.pushClass()
+				}
+			},
+			// 编辑分类中，按下回车
+			editClassKeyup() {
+				if(this.editClassForm.label !== '') {
+					this.editClass()
+				}
+			},
+			// 在创建事项中，按下回车
+			createMatterKeyup() {
+				if(this.createMatterForm.label !== '') {
+					this.pushMatter()
+				}
+			},
+			// 编辑事项中，按下回车
+			editMatterKeyup() {
+				if(this.editMatterForm.label !== '') {
+					this.editMatter()
+				}
+			},
+			// 创建子事项中，按下回车
+			createMatterSonKeyup() {
+				if(this.createMatterSonForm.label !== '') {
+					this.createMatterSon()
+				}
+			},
+			// 编辑子事项中，按下回车
+			editMatterSonKeyup() {
+				if(this.editMatterSonForm.label !== '') {
+					this.editMatterSon()
+				}
 			}
 		},
 		created() {

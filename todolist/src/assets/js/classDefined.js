@@ -20,7 +20,7 @@ export class Matter {
 	}
 }
 // 代办子事项
-export class matterSon {
+export class MatterSon {
 	constructor(classIndex, matterIndex, label, describe, createTime, completionTime, priority) {
 		this.classIndex = classIndex
 		this.matterIndex = matterIndex
