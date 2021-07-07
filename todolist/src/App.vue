@@ -749,7 +749,7 @@
 			// 创建子事项中，按下回车
 			createMatterSonKeyup() {
 				if(this.createMatterSonForm.label !== '') {
-					this.createMatterSon()
+					this.pushMatterSon()
 				}
 			},
 			// 编辑子事项中，按下回车

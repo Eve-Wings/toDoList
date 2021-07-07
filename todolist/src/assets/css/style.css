@@ -130,6 +130,15 @@ body {
   #createMatterSonForm .n-rate {
     --item-size: 14px!important;
   }
+  .n-input {
+    background-color: rgba(170, 170, 170, 0.5);
+  }
+  .n-input .n-input-wrapper .n-input__input .n-input__input-el {
+    color: #38daa3;
+  }
+  .n-input .n-input-wrapper .n-input__textarea .n-input__textarea-el {
+    color: #38daa3;
+  }
 }
 @media screen and (min-width: 768px) {
   #createClassForm,

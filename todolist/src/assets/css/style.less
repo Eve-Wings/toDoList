@@ -1,5 +1,5 @@
 @lightGreen: #63e2b7;
-@back: #fffde4;
+@fontColor: rgb(222,222,222);
 
 // .clearfix::after{
 //   content: '';
@@ -168,7 +168,21 @@ body {
       --item-size: 14px!important;
     }
   }
-
+  .n-input{
+    background-color: rgba(170, 170, 170, 0.5);
+    .n-input-wrapper{
+      .n-input__input{
+        .n-input__input-el{
+          color: darken(@lightGreen, 10%)
+        }
+      }
+      .n-input__textarea{
+        .n-input__textarea-el{
+          color: darken(@lightGreen, 10%)
+        }
+      }
+    }
+  }
 
 }
 
