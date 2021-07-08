@@ -21,11 +21,7 @@ export default createStore({
 		},
 		// 移除分类
 		removeClassification(state, classIndex) {
-			let classLength = state.mattersList.classifications.length
-			for (let i = classIndex; i < classLength - 1; i++) {
-				state.mattersList.classifications[i] = state.mattersList.classifications[i + 1]
-			}
-			state.mattersList.classifications.pop()
+			state.mattersList.classifications.splice(classIndex, 1)
 		},
 		// 修改分类名
 		editClassification(state, editClassForm) {
@@ -36,53 +32,52 @@ export default createStore({
 		// 分类相关操作到此截至
 
 		//===============================================//
-		// 代办事项相关——增删改
-		// 增加新的代办事项
+		// 待办事项相关——增删改
+		// 增加新的待办事项
 		pushMatter(state, pushMatterForm) {
 			// classIndex, matter
 			let classIndex = pushMatterForm.classIndex
 			let matter = pushMatterForm
 			state.mattersList.classifications[classIndex].matters.push(matter)
 		},
-		// 删除代办事项
+		// 删除待办事项
 		removeMatter(state, removeMatterForm) {
 			// classIndex, matterIndex
 			let classIndex = removeMatterForm.classIndex
 			let matterIndex = removeMatterForm
-			let mattersLength = state.mattersList.classifications[classIndex].matters.length
-			for (let i = matterIndex; i < mattersLength - 1; i++) {
-				state.mattersList.classifications[classIndex].matters[i] = state.mattersList.classifications[
-					classIndex].matters[i + 1]
-			}
-			state.mattersList.classifications[classIndex].matters.pop()
+			const matters = state.mattersList.classifications[classIndex].matters
+			matters.splice(matterIndex, 1)
 		},
-		// 修改代办事例
+		// 修改待办事例
 		editMatter(state, editMatterForm) {
 			// classIndex, matterIndex, matter
 			let classIndex = editMatterForm.classIndex
 			let matterIndex = editMatterForm.matterIndex
-			state.mattersList.classifications[classIndex].matters[matterIndex].label = editMatterForm.label
-			state.mattersList.classifications[classIndex].matters[matterIndex].describe = editMatterForm.describe
-			state.mattersList.classifications[classIndex].matters[matterIndex].completionTime = editMatterForm.completionTime
-			state.mattersList.classifications[classIndex].matters[matterIndex].priority = editMatterForm.priority
+			// 获取所修改的待办事项
+			const matter = state.mattersList.classifications[classIndex].matters[matterIndex]
+			matter.label = editMatterForm.label
+			matter.describe = editMatterForm.describe
+			matter.completionTime = editMatterForm.completionTime
+			matter.priority = editMatterForm.priority
 		},
-		// 代办事例完成情况修改
+		// 待办事例完成情况修改
 		complateMatter(state, form) {
 			let classIndex = form.classIndex
 			let matterIndex = form.matterIndex
-			let comp = state.mattersList.classifications[classIndex].matters[matterIndex].completion
-			if(comp === true){
-				state.mattersList.classifications[classIndex].matters[matterIndex].completion = false
+			// 获取所修改的待办事项
+			const matter = state.mattersList.classifications[classIndex].matters[matterIndex]
+			if(matter.completion){
+				matter.completion = false
 			} else {
-				state.mattersList.classifications[classIndex].matters[matterIndex].completion = true
+				matter.completion = true
 			}
 		},
 		
 		// 待办事项相关操作到此截至
 
 		//==================================================//
-		// 代办子事项相关——增删改
-		// 增加新的代办子事项
+		// 待办子事项相关——增删改
+		// 增加新的待办子事项
 		pushMatterSon(state, pushMatterSonForm) {
 			// classIndex, matterIndex, matterSon
 			let classIndex = pushMatterSonForm.classIndex
@@ -90,43 +85,40 @@ export default createStore({
 			let matterSon = pushMatterSonForm
 			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons.push(matterSon)
 		},
-		// 删除代办子事项
+		// 删除待办子事项
 		removeMatterSon(state, removeMatterSonForm) {
 			// classIndex, matterIndex, matterSonIndex
 			let classIndex = removeMatterSonForm.classIndex
 			let matterIndex = removeMatterSonForm.matterIndex
 			let matterSonIndex = removeMatterSonForm.matterSonIndex
-			let matterSonsLength = state.mattersList.classifications[classIndex].matters[matterIndex]
-				.matterSons.length
-			for (let i = matterSonIndex; i < matterSonsLength - 1; i++) {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[i] = state
-					.mattersList.classifications[classIndex].matters[matterIndex].matterSons[i + 1]
-			}
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons.pop()
+			// 获取所删除的子事项所在的子事项组
+			const matterSons = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons
+			matterSons.splice(matterSonIndex, 1)
 		},
-		// 修改代办子事项
+		// 修改待办子事项
 		editMatterSon(state, editMatterSonForm) {
 			// classIndex, matterIndex, matterSonIndex, matterSon
 			let classIndex = editMatterSonForm.classIndex
 			let matterIndex = editMatterSonForm.matterIndex
 			let matterSonIndex = editMatterSonForm.matterSonIndex
-			console.log(editMatterSonForm)
-			console.log(state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex])
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].label = editMatterSonForm.label
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].describe = editMatterSonForm.describe
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completionTime = editMatterSonForm.completionTime
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].priority = editMatterSonForm.priority
+			// 获取到当前修改的子事项
+			const matterSon = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex]
+			matterSon.label = editMatterSonForm.label
+			matterSon.describe = editMatterSonForm.describe
+			matterSon.completionTime = editMatterSonForm.completionTime
+			matterSon.priority = editMatterSonForm.priority
 		},
 		// 子事项完成情况修改
 		complateMatterSon(state,form) {
 			let classIndex = form.classIndex
 			let matterIndex = form.matterIndex
 			let matterSonIndex = form.matterSonIndex
-			let comp = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion
-			if(comp === true) {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion = false
+			// 获取到当前修改的子事项
+			const matterSon = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex]
+			if(matterSon.completion) {
+				matterSon.completion = false
 			} else {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion = true
+				matterSon.completion = true
 			}
 		}
 	},

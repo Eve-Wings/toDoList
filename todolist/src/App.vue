@@ -231,7 +231,7 @@
 						<n-form-item>
 							<!-- 提交按钮 -->
 							<n-button style="margin-left: auto;" @click="pushClass()"
-								:disabled="createClassForm.label === ''">创建</n-button>
+								:disabled="createClassForm.label.trim() === ''">创建</n-button>
 						</n-form-item>
 					</n-form>
 				</n-card>
@@ -250,7 +250,7 @@
 						</n-form-item>
 						<n-form-item>
 							<n-button style="margin-left: auto;" @click="editClass()"
-								:disabled="editClassForm.label === ''">修改</n-button>
+								:disabled="editClassForm.label.trim() === ''">修改</n-button>
 						</n-form-item>
 					</n-form>
 				</n-card>
@@ -288,7 +288,7 @@
 						</n-form-item>
 						<n-form-item>
 							<n-button style="margin-left: auto;" @click="pushMatter()"
-								:disabled="createMatterForm.label === ''">添加事项</n-button>
+								:disabled="createMatterForm.label.trim() === ''">添加事项</n-button>
 						</n-form-item>
 					</n-form>
 				</n-card>
@@ -325,7 +325,7 @@
 						</n-form-item>
 						<n-form-item>
 							<n-button style="margin-left: auto;" @click="editMatter()"
-								:disabled="editMatterForm.label === ''">修改事项</n-button>
+								:disabled="editMatterForm.label.trim() === ''">修改事项</n-button>
 						</n-form-item>
 					</n-form>
 				</n-card>
@@ -363,7 +363,7 @@
 						</n-form-item>
 						<n-form-item>
 							<n-button style="margin-left: auto;" @click="pushMatterSon()"
-								:disabled="createMatterSonForm.label === ''">添加子事项</n-button>
+								:disabled="createMatterSonForm.label.trim() === ''">添加子事项</n-button>
 						</n-form-item>
 					</n-form>
 				</n-card>
@@ -402,7 +402,7 @@
 						</n-form-item>
 						<n-form-item>
 							<n-button style="margin-left: auto;" @click="editMatterSon()"
-								:disabled="editMatterSonForm.label === ''">修改子事项</n-button>
+								:disabled="editMatterSonForm.label.trim() === ''">修改子事项</n-button>
 						</n-form-item>
 					</n-form>
 				</n-card>
