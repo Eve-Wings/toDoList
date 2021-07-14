@@ -16,10 +16,15 @@ sidebar: auto
 
 ## *.更新日志
 
-| 版本 | 内容                                                         | 时间       |
-| ---- | ------------------------------------------------------------ | ---------- |
-| 0.9  | 完成了大体内容与主要功能                                     | 2021-07-03 |
-| 0.95 | 初步完成移动端适配、回车键的交互效果、同时调整了部分变量名，使其更加统一。调整了界面和按钮的布局 | 2021-07-04 |
+| 版本     | 内容                                                         | 时间       |
+| -------- | ------------------------------------------------------------ | ---------- |
+| 0.9      | 完成了大体内容与主要功能                                     | 2021-07-03 |
+| 0.95     | 初步完成移动端适配、回车键的交互效果、同时调整了部分变量名，使其更加统一。调整了界面和按钮的布局 | 2021-07-04 |
+| bug修复  | 修复了移动端输入框中看不到所输入的文本的bug                  | 2021-07-08 |
+| bug修复  | 添加子事项回车键无法使用的bug                                | 2021-07-08 |
+| 代码优化 | 使用数组方法 splice() 完成对数组的操作                       | 2021-07-08 |
+| 功能优化 | str.trim()                                                   | 2021-07-08 |
+| bug修复  | 删除分类、事项之后，对后续分类、事项、子事项进行操作时，出现目标错误的情况，由删除之后未重新定位序号导致的 | 2021-07-14 |
 
 
 
@@ -27,14 +32,30 @@ sidebar: auto
 
 - 删除按钮的二次确认
 - 交互的提示
+- 使用解构赋值优化代码
 
 ### Issue
 
-- 移动端输入框看不到所输入的文本
-  - 进一步测试，浅色主题下，可以看到输入框的文本正常
-  - 初步判断是因为深色主题下，文本颜色为白色导致输入框看不到所输入的颜色
-- 代码，通过使用 const xxx = this.$store.state.xxxx，然后再进行修改，让代码可读性提高的可行性？
-- 部分移动端的按钮图标、渐变文字会丢失
+- ~~移动端输入框看不到所输入的文本~~
+  - ~~进一步测试，浅色主题下，可以看到输入框的文本正常~~
+  - ~~初步判断是因为深色主题下，文本颜色为白色导致输入框看不到所输入的颜色~~
+  - 已大体解决
+- ~~代码，通过使用 const xxx = this.$store.state.xxxx，然后再进行修改，让代码可读性提高的可行性？~~
+- ~~部分移动端的按钮图标、渐变文字会丢失~~
+  - ~~框架官方bug……~~
+- ~~输入框输入空格便可以完成输入的问题(到底允不允许这种情况？)~~
+  - str.trim()
+- ~~添加子事项使用回车键无法正常添加的异常：“this.createMatterSon is not a function”~~
+  - 已解决
+- ~~关于数组方法的修改——原方法过于累赘，可以直接使用 splice()~~
+- 关于移动端至今为止的各种情况
+  - 渐变字体无法正常展示渐变色(华为浏览器)
+  - 按钮图标丢失(小米、safari)
+  - 输入框背景色为白色(华为)
+- ~~事项修改优先级——Cannot read property 'matters' of undefined~~
+  - ~~当删除了分类、事项的时候~~
+    - ~~后续的分类、事项、子事项的ID需要进行修改~~
+    - 已解决
 
 
 
@@ -89,15 +110,21 @@ toDoList——一个能够记录更多细节和更清晰更详细内容的待办
 
 ### 3.1：操作流程
 
+<img :src="$withBase('/assets/img/toDoList/操作流程图.jpg') " alt="操作流程图">
+
 
 
 ### 3.2：用例图
+
+<img :src="$withBase('/assets/img/toDoList/用例图.jpg')" alt="用例图">
 
 
 
 ## 4.数据库设计
 
 ### 4.1 E-R图
+
+<img :src="$withBase('/assets/img/toDoList/E-R图.jpg')" alt="E-R图">
 
 
 
@@ -193,6 +220,8 @@ matter_son = {
 
 简单线框图(因为工具的问题，暂不进行细化)
 
+<img :src="$withBase('/assets/img/toDoList/简单线框图.jpg')" alt="用例图">
+
 
 
 ## 6.编程实现
@@ -254,11 +283,7 @@ export default createStore({
 		},
 		// 移除分类
 		removeClassification(state, classIndex) {
-			let classLength = state.mattersList.classifications.length
-			for (let i = classIndex; i < classLength - 1; i++) {
-				state.mattersList.classifications[i] = state.mattersList.classifications[i + 1]
-			}
-			state.mattersList.classifications.pop()
+			state.mattersList.classifications.splice(classIndex, 1)
 		},
 		// 修改分类名
 		editClassification(state, editClassForm) {
@@ -269,53 +294,52 @@ export default createStore({
 		// 分类相关操作到此截至
 
 		//===============================================//
-		// 代办事项相关——增删改
-		// 增加新的代办事项
+		// 待办事项相关——增删改
+		// 增加新的待办事项
 		pushMatter(state, pushMatterForm) {
 			// classIndex, matter
 			let classIndex = pushMatterForm.classIndex
 			let matter = pushMatterForm
 			state.mattersList.classifications[classIndex].matters.push(matter)
 		},
-		// 删除代办事项
+		// 删除待办事项
 		removeMatter(state, removeMatterForm) {
 			// classIndex, matterIndex
 			let classIndex = removeMatterForm.classIndex
 			let matterIndex = removeMatterForm
-			let mattersLength = state.mattersList.classifications[classIndex].matters.length
-			for (let i = matterIndex; i < mattersLength - 1; i++) {
-				state.mattersList.classifications[classIndex].matters[i] = state.mattersList.classifications[
-					classIndex].matters[i + 1]
-			}
-			state.mattersList.classifications[classIndex].matters.pop()
+			const matters = state.mattersList.classifications[classIndex].matters
+			matters.splice(matterIndex, 1)
 		},
-		// 修改代办事例
+		// 修改待办事例
 		editMatter(state, editMatterForm) {
 			// classIndex, matterIndex, matter
 			let classIndex = editMatterForm.classIndex
 			let matterIndex = editMatterForm.matterIndex
-			state.mattersList.classifications[classIndex].matters[matterIndex].label = editMatterForm.label
-			state.mattersList.classifications[classIndex].matters[matterIndex].describe = editMatterForm.describe
-			state.mattersList.classifications[classIndex].matters[matterIndex].completionTime = editMatterForm.completionTime
-			state.mattersList.classifications[classIndex].matters[matterIndex].priority = editMatterForm.priority
+			// 获取所修改的待办事项
+			const matter = state.mattersList.classifications[classIndex].matters[matterIndex]
+			matter.label = editMatterForm.label
+			matter.describe = editMatterForm.describe
+			matter.completionTime = editMatterForm.completionTime
+			matter.priority = editMatterForm.priority
 		},
-		// 代办事例完成情况修改
+		// 待办事例完成情况修改
 		complateMatter(state, form) {
 			let classIndex = form.classIndex
 			let matterIndex = form.matterIndex
-			let comp = state.mattersList.classifications[classIndex].matters[matterIndex].completion
-			if(comp === true){
-				state.mattersList.classifications[classIndex].matters[matterIndex].completion = false
+			// 获取所修改的待办事项
+			const matter = state.mattersList.classifications[classIndex].matters[matterIndex]
+			if (matter.completion) {
+				matter.completion = false
 			} else {
-				state.mattersList.classifications[classIndex].matters[matterIndex].completion = true
+				matter.completion = true
 			}
 		},
-		
+
 		// 待办事项相关操作到此截至
 
 		//==================================================//
-		// 代办子事项相关——增删改
-		// 增加新的代办子事项
+		// 待办子事项相关——增删改
+		// 增加新的待办子事项
 		pushMatterSon(state, pushMatterSonForm) {
 			// classIndex, matterIndex, matterSon
 			let classIndex = pushMatterSonForm.classIndex
@@ -323,47 +347,47 @@ export default createStore({
 			let matterSon = pushMatterSonForm
 			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons.push(matterSon)
 		},
-		// 删除代办子事项
+		// 删除待办子事项
 		removeMatterSon(state, removeMatterSonForm) {
 			// classIndex, matterIndex, matterSonIndex
 			let classIndex = removeMatterSonForm.classIndex
 			let matterIndex = removeMatterSonForm.matterIndex
 			let matterSonIndex = removeMatterSonForm.matterSonIndex
-			let matterSonsLength = state.mattersList.classifications[classIndex].matters[matterIndex]
-				.matterSons.length
-			for (let i = matterSonIndex; i < matterSonsLength - 1; i++) {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[i] = state
-					.mattersList.classifications[classIndex].matters[matterIndex].matterSons[i + 1]
-			}
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons.pop()
+			// 获取所删除的子事项所在的子事项组
+			const matterSons = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons
+			matterSons.splice(matterSonIndex, 1)
 		},
-		// 修改代办子事项
+		// 修改待办子事项
 		editMatterSon(state, editMatterSonForm) {
 			// classIndex, matterIndex, matterSonIndex, matterSon
 			let classIndex = editMatterSonForm.classIndex
 			let matterIndex = editMatterSonForm.matterIndex
 			let matterSonIndex = editMatterSonForm.matterSonIndex
-			console.log(editMatterSonForm)
-			console.log(state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex])
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].label = editMatterSonForm.label
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].describe = editMatterSonForm.describe
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completionTime = editMatterSonForm.completionTime
-			state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].priority = editMatterSonForm.priority
+			// 获取到当前修改的子事项
+			const matterSon = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[
+				matterSonIndex]
+			matterSon.label = editMatterSonForm.label
+			matterSon.describe = editMatterSonForm.describe
+			matterSon.completionTime = editMatterSonForm.completionTime
+			matterSon.priority = editMatterSonForm.priority
 		},
-        // 子事项完成情况修改
-		complateMatterSon(state,form) {
+		// 子事项完成情况修改
+		complateMatterSon(state, form) {
 			let classIndex = form.classIndex
 			let matterIndex = form.matterIndex
 			let matterSonIndex = form.matterSonIndex
-			let comp = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion
-			if(comp === true) {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion = false
+			// 获取到当前修改的子事项
+			const matterSon = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[
+				matterSonIndex]
+			if (matterSon.completion) {
+				matterSon.completion = false
 			} else {
-				state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex].completion = true
+				matterSon.completion = true
 			}
 		}
 	}
 })
+
 ```
 
 同时，我们也可以准备以下类，以便于添加数据。
@@ -1356,13 +1380,15 @@ if (obj !== null) {
 }
 ```
 
-#### 6.11.3 回车键触发提交(0.95版本)
+### 6.12 后续更新维护(2021/07/14)
+
+#### 6.12.1 回车键触发提交(0.95版本)
 
 实际上使用的是vue提供的 @keyup.enter 绑定事件
 
 绑定的事件可以在代码中搜索 keyup 关键字
 
-#### 6.11.4 移动端适配(0.95版本)
+#### 6.12.2 移动端适配(0.95版本)
 
 使用媒体监听基于原本的样式再整了一套移动端的样式
 
@@ -1370,11 +1396,79 @@ if (obj !== null) {
 @meadia screen and (max-width: 768px){}
 ```
 
-#### 6.11.5 变量名调整(0.95版本)
+#### 6.12.3 变量名调整(0.95版本)
 
 matter_son 统一改为 matterSon
 
-### 6.12 项目感想
+#### 6.12.4 bug修复——移动端下，输入框无法看到其输入的文本(2021/07/07)
+
+修改样式，媒体查询移动端
+
+```less
+@media screen and (max-width:768px) {
+    .n-input{
+    background-color: rgba(170, 170, 170, 0.5);
+    .n-input-wrapper{
+      .n-input__input{
+        .n-input__input-el{
+          color: darken(@lightGreen, 10%)
+        }
+      }
+      .n-input__textarea{
+        .n-input__textarea-el{
+          color: darken(@lightGreen, 10%)
+        }
+      }
+    }
+  }
+}
+```
+
+#### 6.12.5 代码优化(2021/07/08)
+
+```javascript
+const matterSon = state.mattersList.classifications[classIndex].matters[matterIndex].matterSons[matterSonIndex]
+// 通过这种方式获取到对象之后，对matterSon操作即可，可以提高可读性
+```
+
+#### 6.12.6 输入框输入空格的问题(2021/07/08)
+
+```javascript
+str.trim()	// 可以删除字符串中的前后空格串,返回新数组
+```
+
+#### 6.12.7 删除分类、事项修改(2021/07/14)
+
+```javascript
+removeClassification(state, classIndex) {
+	state.mattersList.classifications.splice(classIndex, 1)
+	// 将分类之后的分类中所有的classID进行修改
+	state.mattersList.classifications.forEach((classification, classIndex) => {
+		classification.matters.forEach(matter => {
+			matter.classIndex = classIndex
+			matter.matterSons.forEach(matterSon => {
+				matterSon.classIndex = classIndex
+			})
+		})
+	})
+}
+
+removeMatter(state, removeMatterForm) {
+	// classIndex, matterIndex
+	let classIndex = removeMatterForm.classIndex
+	let matterIndex = removeMatterForm
+	const matters = state.mattersList.classifications[classIndex].matters
+	matters.splice(matterIndex, 1)
+	// 删除待办事项之后，对该事项之后的事项的ID进行修改
+	matters.forEach((matter, matterIndex) => {
+		matter.matterSons.forEach(matterSon => {
+			matterSon.matterIndex = matterIndex
+		})
+	})
+}
+```
+
+### 6.13 项目感想
 
 这里开始不正经了
 

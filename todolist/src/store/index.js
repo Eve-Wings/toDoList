@@ -22,6 +22,15 @@ export default createStore({
 		// 移除分类
 		removeClassification(state, classIndex) {
 			state.mattersList.classifications.splice(classIndex, 1)
+			// 将分类之后的分类中所有的classID进行修改
+			state.mattersList.classifications.forEach((classification, classIndex) => {
+				classification.matters.forEach(matter => {
+					matter.classIndex = classIndex
+					matter.matterSons.forEach(matterSon => {
+						matterSon.classIndex = classIndex
+					})
+				})
+			})
 		},
 		// 修改分类名
 		editClassification(state, editClassForm) {
@@ -47,6 +56,12 @@ export default createStore({
 			let matterIndex = removeMatterForm
 			const matters = state.mattersList.classifications[classIndex].matters
 			matters.splice(matterIndex, 1)
+			// 删除待办事项之后，对该事项之后的事项的ID进行修改
+			matters.forEach((matter, matterIndex) => {
+				matter.matterSons.forEach(matterSon => {
+					matterSon.matterIndex = matterIndex
+				})
+			})
 		},
 		// 修改待办事例
 		editMatter(state, editMatterForm) {
